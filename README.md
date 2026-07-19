@@ -19,20 +19,6 @@ A modern courier and parcel delivery management platform that simplifies parcel 
 
 ---
 
-# 📑 Table of Contents
-
-- [📸 Project Screenshot](#-project-screenshot)
-- [🚀 Project Overview](#-project-overview)
-- [🎯 Goal](#-goal)
-- [✨ Key Features](#-key-features)
-- [🛠 Technology Stack](#️-technology-stack)
-- [📦 Dependencies](#-dependencies)
-- [⚙️ Installation & Setup](#️-installation--setup)
-- [🔐 Authentication & Security](#-authentication--security)
-- [👨‍💻 Developer](#-developer)
-
----
-
 # 🚀 Project Overview
 
 **Pro Courier** is a modern courier and logistics management platform built to streamline parcel delivery services. The application enables customers to book deliveries, monitor shipment progress, and manage parcel history, while administrators oversee riders, customers, deliveries, and system activities through a centralized dashboard.
