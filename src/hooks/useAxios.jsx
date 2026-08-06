@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: `https://kawsaralidev-pro-curier-server.vercel.app`,
+  baseURL: "https://pro-curier-server.onrender.com",
 });
 
 const UseAxios = () => {
