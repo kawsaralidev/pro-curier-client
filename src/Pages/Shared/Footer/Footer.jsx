@@ -1,59 +1,120 @@
-import logo from "../../../assets/logos/logo.png";
+import logo from "../../../assets/logos/procurier-mark.svg";
+import { Link } from "react-router";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaArrowUp,
+} from "react-icons/fa";
 
-const Footer = () => {
-  return (
-    <footer className="footer footer-horizontal footer-center bg-neutral text-neutral-content p-10">
-      <aside>
-        <div className="flex items-end">
-          <img className="mb-2" src={logo} alt="" />
-          <p className="text-3xl font-extrabold -ml-3">ProCurier</p>
-        </div>
-        <p className="font-bold">
-          ACME Industries Ltd.
-          <br />
-          Providing reliable tech since 1992
-        </p>
-        <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
-      </aside>
-      <nav>
-        <div className="grid grid-flow-col gap-4">
-          <a>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              className="fill-current"
-            >
-              <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path>
-            </svg>
-          </a>
-          <a>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              className="fill-current"
-            >
-              <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
-            </svg>
-          </a>
-          <a>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              className="fill-current"
-            >
-              <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"></path>
-            </svg>
-          </a>
-        </div>
-      </nav>
-    </footer>
-  );
-};
+const socialLinks = [
+  { label: "Facebook", icon: FaFacebookF },
+  { label: "Instagram", icon: FaInstagram },
+  { label: "LinkedIn", icon: FaLinkedinIn },
+];
 
+const Footer = () => (
+  <footer className="relative overflow-hidden bg-slate-950 text-slate-300">
+    <div className="pointer-events-none absolute -left-32 -top-32 h-72 w-72 rounded-full bg-teal-700/15 blur-3xl" />
+    <div className="pointer-events-none absolute -bottom-32 right-0 h-80 w-80 rounded-full bg-amber-400/10 blur-3xl" />
+
+    <div className="pc-container relative">
+      <div className="grid gap-12 border-b border-white/10 py-14 sm:py-16 lg:grid-cols-[1.5fr_1fr_1fr_1.1fr] lg:gap-10">
+        <div>
+          <Link to="/" className="inline-flex items-center gap-3">
+            <span className="grid h-11 w-11 place-items-center rounded-xl bg-white/10 ring-1 ring-white/10">
+              <img
+                src={logo}
+                alt="ProCurier logo"
+                className="h-9 w-9 object-contain"
+              />
+            </span>
+            <span className="text-2xl font-extrabold tracking-tight text-white">
+              Pro<span className="text-teal-400">Curier</span>
+            </span>
+          </Link>
+
+          <p className="mt-5 max-w-sm text-sm leading-7 text-slate-400">
+            Reliable parcel delivery with transparent tracking, organized
+            workflows, and a better experience for every role.
+          </p>
+
+          <div className="mt-6 flex gap-2">
+            {socialLinks.map((social) => {
+              const Icon = social.icon;
+
+              return (
+                <a
+                  key={social.label}
+                  href="#"
+                  aria-label={social.label}
+                  className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-sm text-slate-400 transition hover:border-teal-400/30 hover:bg-teal-600 hover:text-white"
+                >
+                  <Icon />
+                </a>
+              );
+            })}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-extrabold uppercase tracking-[0.14em] text-white">
+            Platform
+          </h3>
+          <div className="mt-5 flex flex-col gap-3 text-sm">
+            <Link className="transition hover:text-teal-300" to="/">Home</Link>
+            <Link className="transition hover:text-teal-300" to="/sendParcel">Send a Parcel</Link>
+            <Link className="transition hover:text-teal-300" to="/coverage">Coverage</Link>
+            <Link className="transition hover:text-teal-300" to="/beARider">Become a Rider</Link>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-extrabold uppercase tracking-[0.14em] text-white">
+            Account
+          </h3>
+          <div className="mt-5 flex flex-col gap-3 text-sm">
+            <Link className="transition hover:text-teal-300" to="/login">Login</Link>
+            <Link className="transition hover:text-teal-300" to="/register">Register</Link>
+            <Link className="transition hover:text-teal-300" to="/dashboard">Dashboard</Link>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-extrabold uppercase tracking-[0.14em] text-white">
+            ProCurier promise
+          </h3>
+          <p className="mt-5 text-sm leading-7 text-slate-400">
+            Clear tracking, structured delivery operations, and role-based
+            access designed around the complete parcel journey.
+          </p>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            <span className="rounded-full border border-teal-400/20 bg-teal-400/10 px-3 py-1.5 text-xs font-bold text-teal-300">
+              Live Tracking
+            </span>
+            <span className="rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1.5 text-xs font-bold text-amber-300">
+              Secure Workflow
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-4 py-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+        <p>© {new Date().getFullYear()} ProCurier. All rights reserved.</p>
+
+        <div className="flex items-center gap-5">
+          <span>Fast delivery. Clear tracking. Better control.</span>
+          <Link
+            to="/"
+            aria-label="Back to top"
+            className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 text-slate-400 transition hover:border-teal-400/30 hover:text-teal-300"
+          >
+            <FaArrowUp />
+          </Link>
+        </div>
+      </div>
+    </div>
+  </footer>
+);
 export default Footer;

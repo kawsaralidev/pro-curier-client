@@ -14,38 +14,104 @@ import {
 } from "react-icons/fa";
 import { Link, NavLink, Outlet } from "react-router";
 import useUserRole from "../hooks/useUserRole";
+import UseAuth from "../hooks/useAuth";
+import { FaChevronDown, FaUserCircle } from "react-icons/fa";
 
 const DashboardLayout = () => {
   const { role, roleLoading } = useUserRole();
-  console.log(role);
+  const { user, logOut } = UseAuth();
+  const [profileOpen, setProfileOpen] = React.useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await logOut();
+    } finally {
+      setProfileOpen(false);
+    }
+  };
   return (
-    <div className="drawer lg:drawer-open max-w-7xl mx-auto">
+    <div className="drawer lg:drawer-open min-h-screen bg-slate-50">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">
         {/* Navbar */}
-        <nav className="navbar w-full bg-base-300">
-          <label
-            htmlFor="my-drawer-4"
-            aria-label="open sidebar"
-            className="btn btn-square btn-ghost"
-          >
-            {/* Sidebar toggle icon */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeWidth="2"
-              fill="none"
-              stroke="currentColor"
-              className="my-1.5 inline-block size-4"
+        <nav className="navbar sticky top-0 z-40 w-full border-b border-slate-200 bg-white/95 px-2 shadow-sm backdrop-blur sm:px-4">
+          <div className="flex-none">
+            <label
+              htmlFor="my-drawer-4"
+              aria-label="open sidebar"
+              className="btn btn-square btn-ghost"
             >
-              <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
-              <path d="M9 4v16"></path>
-              <path d="M14 10l2 2l-2 2"></path>
-            </svg>
-          </label>
-          <div className="px-4">Pro Curier Dashboard</div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                strokeWidth="2"
+                fill="none"
+                stroke="currentColor"
+                className="my-1.5 inline-block size-4"
+              >
+                <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+                <path d="M9 4v16"></path>
+                <path d="M14 10l2 2l-2 2"></path>
+              </svg>
+            </label>
+          </div>
+
+          <div className="flex-1 px-3">
+            <p className="text-sm font-extrabold text-slate-900 sm:text-base">ProCurier Dashboard</p>
+            <p className="hidden text-xs text-slate-500 sm:block">
+              Manage your delivery activity
+            </p>
+          </div>
+
+          <div className="relative flex-none">
+            <button
+              type="button"
+              onClick={() => setProfileOpen((open) => !open)}
+              className="btn btn-ghost flex h-auto min-h-10 gap-2 px-2"
+              aria-expanded={profileOpen}
+            >
+              {user?.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt={user.displayName || "Profile"}
+                  className="h-9 w-9 rounded-full object-cover"
+                />
+              ) : (
+                <FaUserCircle className="text-3xl opacity-70" />
+              )}
+              <span className="hidden max-w-28 truncate text-left sm:block">
+                {user?.displayName || user?.email || "Profile"}
+              </span>
+              <FaChevronDown className="text-xs opacity-60" />
+            </button>
+
+            {profileOpen && (
+              <div className="absolute right-0 top-12 z-50 w-60 rounded-2xl border border-base-300 bg-base-100 p-2 shadow-xl">
+                <div className="border-b border-base-300 px-3 py-3">
+                  <p className="truncate font-semibold">
+                    {user?.displayName || "ProCurier User"}
+                  </p>
+                  <p className="truncate text-xs opacity-60">{user?.email}</p>
+                </div>
+                <Link
+                  to="/dashboard/profile"
+                  onClick={() => setProfileOpen(false)}
+                  className="btn btn-ghost mt-2 w-full justify-start"
+                >
+                  <FaUserEdit /> Profile
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="btn btn-ghost w-full justify-start text-error"
+                >
+                  <FaUserShield /> Logout
+                </button>
+              </div>
+            )}
+          </div>
         </nav>
         {/* Page content here */}
         <Outlet></Outlet>
@@ -57,14 +123,14 @@ const DashboardLayout = () => {
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
+        <div className="flex min-h-full flex-col items-start border-r border-slate-200 bg-slate-950 text-slate-200 is-drawer-close:w-14 is-drawer-open:w-64">
           {/* Sidebar content here */}
-          <ul className="menu w-full grow">
+          <ul className="menu w-full grow gap-1 p-2">
             {/* List item */}
             <li>
               <Link
                 to="/"
-                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
                 data-tip="Homepage"
               >
                 {/* Home icon */}
@@ -88,7 +154,7 @@ const DashboardLayout = () => {
             {/* our dashboard links */}
             <li>
               <NavLink
-                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
                 data-tip="MyParcels"
                 to="/dashboard/myParcels"
               >
@@ -99,7 +165,7 @@ const DashboardLayout = () => {
 
             <li>
               <NavLink
-                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
                 data-tip="Payment History"
                 to="/dashboard/paymentHistory"
               >
@@ -110,7 +176,7 @@ const DashboardLayout = () => {
 
             <li>
               <NavLink
-                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
                 data-tip="Update Profile"
                 to="/dashboard/profile"
               >
@@ -121,7 +187,7 @@ const DashboardLayout = () => {
 
             <li>
               <NavLink
-                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
                 data-tip="Track a Package"
                 to="/dashboard/track"
               >
@@ -134,7 +200,7 @@ const DashboardLayout = () => {
               <>
                 <li>
                   <NavLink
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
                     data-tip="Pending Deliveries"
                     to="/dashboard/pending-deliveries"
                   >
@@ -146,7 +212,7 @@ const DashboardLayout = () => {
                 </li>
                 <li>
                   <NavLink
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
                     data-tip="Completed Deliveries"
                     to="/dashboard/completed-deliveries"
                   >
@@ -158,7 +224,7 @@ const DashboardLayout = () => {
                 </li>
                 <li>
                   <NavLink
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
                     data-tip="My Earnings"
                     to="/dashboard/my-earnings"
                   >
@@ -174,7 +240,7 @@ const DashboardLayout = () => {
                 <li>
                   <NavLink
                     to="/dashboard/assignRider"
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
                     data-tip="Assign Rider"
                   >
                     <FaMotorcycle />
@@ -184,7 +250,7 @@ const DashboardLayout = () => {
 
                 <li>
                   <NavLink
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
                     data-tip="Active Riders"
                     to="/dashboard/active-riders"
                   >
@@ -197,7 +263,7 @@ const DashboardLayout = () => {
 
                 <li>
                   <NavLink
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
                     data-tip="Pending Riders"
                     to="/dashboard/pending-riders"
                   >
@@ -211,7 +277,7 @@ const DashboardLayout = () => {
                 <li>
                   <NavLink
                     to="/dashboard/makeAdmin"
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
                     data-tip="Make Admin"
                   >
                     <FaUserShield />
@@ -223,7 +289,7 @@ const DashboardLayout = () => {
             {/* List item */}
             <li>
               <button
-                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
                 data-tip="Settings"
               >
                 {/* Settings icon */}

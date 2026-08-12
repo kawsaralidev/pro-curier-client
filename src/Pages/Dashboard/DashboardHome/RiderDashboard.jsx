@@ -1,95 +1,111 @@
 import { useQuery } from "@tanstack/react-query";
-import { FaTruck, FaUserCheck, FaBoxOpen, FaCheckCircle } from "react-icons/fa";
+import {
+  FaBoxOpen,
+  FaCheckCircle,
+  FaMotorcycle,
+  FaMoneyBillWave,
+} from "react-icons/fa";
 import UseAxiosSecure from "../../../hooks/useAxiosSecure";
-import UseAuth from "../../../hooks/useAuth";
-
-const statusConfig = {
-  rider_assigned: {
-    label: "Rider Assigned",
-    icon: <FaUserCheck className="text-info text-3xl" />,
-    color: "text-info",
-  },
-  not_collected: {
-    label: "Not Collected",
-    icon: <FaBoxOpen className="text-warning text-3xl" />,
-    color: "text-warning",
-  },
-  in_transit: {
-    label: "In Transit",
-    icon: <FaTruck className="text-primary text-3xl" />,
-    color: "text-primary",
-  },
-  delivered: {
-    label: "Delivered",
-    icon: <FaCheckCircle className="text-success text-3xl" />,
-    color: "text-success",
-  },
-};
+import Loading from "../../../Components/Loading";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 const RiderDashboard = () => {
   const axiosSecure = UseAxiosSecure();
-  const { user } = UseAuth();
 
-  const {
-    data: riderStats = [],
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["rider-parcel-status"],
+  const { data: stats, isLoading, isError } = useQuery({
+    queryKey: ["dashboard-stats"],
     queryFn: async () => {
-      const res = await axiosSecure(
-        `/riders/parcels/status-count/${user.email}`,
-      );
-      return res.data;
+      const response = await axiosSecure.get("/dashboard/stats");
+      return response.data;
     },
   });
 
-  // Convert array → object for easy lookup
-  const statusMap = {};
-  riderStats.forEach((item) => {
-    statusMap[item.status] = item.count;
-  });
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-60">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      </div>
-    );
-  }
+  if (isLoading) return <Loading />;
 
   if (isError) {
     return (
-      <div className="alert alert-error">
-        <span>{error.message}</span>
+      <div className="p-4 sm:p-6">
+        <div className="alert alert-error">
+          <span>Unable to load rider statistics.</span>
+        </div>
       </div>
     );
   }
 
+  const cards = [
+    { label: "Assigned Parcels", value: stats?.totalParcels || 0, icon: <FaBoxOpen />, tone: "text-primary" },
+    { label: "Delivered", value: stats?.delivered || 0, icon: <FaCheckCircle />, tone: "text-success" },
+    { label: "In Transit", value: stats?.inTransit || 0, icon: <FaMotorcycle />, tone: "text-info" },
+    { label: "Earnings", value: `৳ ${Number(stats?.totalEarnings || 0).toLocaleString()}`, icon: <FaMoneyBillWave />, tone: "text-warning" },
+  ];
+
+  const chartData = [
+    { status: "Pending", count: stats?.pending || 0 },
+    { status: "Assigned", count: stats?.riderAssigned || 0 },
+    { status: "In Transit", count: stats?.inTransit || 0 },
+    { status: "Delivered", count: stats?.delivered || 0 },
+  ];
+
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">Rider Delivery Overview</h2>
+    <div className="space-y-6 p-3 sm:p-6">
+      <div>
+        <p className="text-sm font-semibold uppercase tracking-wider text-primary">
+          Rider overview
+        </p>
+        <h1 className="mt-1 text-2xl font-bold sm:text-3xl">Delivery Dashboard</h1>
+        <p className="mt-1 text-sm opacity-65">
+          Track your assigned deliveries and earnings.
+        </p>
+      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {Object.entries(statusConfig).map(([status, config]) => (
-          <div
-            key={status}
-            className="card bg-base-200 shadow-lg hover:shadow-xl transition"
-          >
-            <div className="card-body flex flex-row items-center justify-between">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {cards.map((card) => (
+          <div key={card.label} className="card border border-base-300 bg-base-100 shadow-sm">
+            <div className="card-body flex-row items-center justify-between p-5">
               <div>
-                <p className="text-sm opacity-70">{config.label}</p>
-
-                <h3 className={`text-3xl font-bold ${config.color}`}>
-                  {statusMap[status] || 0}
-                </h3>
+                <p className="text-sm opacity-60">{card.label}</p>
+                <h2 className={`mt-1 text-2xl font-bold ${card.tone}`}>{card.value}</h2>
               </div>
-
-              <div>{config.icon}</div>
+              <span className={`text-3xl ${card.tone}`}>{card.icon}</span>
             </div>
           </div>
         ))}
+      </div>
+
+      <section className="card border border-base-300 bg-base-100 shadow-sm">
+        <div className="card-body">
+          <h2 className="card-title">Delivery Status</h2>
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="status" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Bar dataKey="count" name="Parcels" fill="#2563EB" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </section>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm">
+          <p className="text-sm opacity-60">Completed deliveries</p>
+          <p className="mt-1 text-3xl font-bold text-success">{stats?.completedDeliveries || 0}</p>
+        </div>
+        <div className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm">
+          <p className="text-sm opacity-60">Pending deliveries</p>
+          <p className="mt-1 text-3xl font-bold text-warning">{stats?.pending || 0}</p>
+        </div>
       </div>
     </div>
   );

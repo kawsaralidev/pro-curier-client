@@ -3,24 +3,67 @@ import Swal from "sweetalert2";
 import UseAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 
+const PAGE_SIZE = 10;
+
+const normalizeResponse = (response) => {
+  if (Array.isArray(response)) {
+    return {
+      data: response,
+      pagination: {
+        total: response.length,
+        page: 1,
+        limit: response.length || PAGE_SIZE,
+        totalPages: response.length ? 1 : 0,
+        hasNextPage: false,
+        hasPreviousPage: false,
+      },
+    };
+  }
+
+  return {
+    data: Array.isArray(response?.data) ? response.data : [],
+    pagination: response?.pagination || {
+      total: 0,
+      page: 1,
+      limit: PAGE_SIZE,
+      totalPages: 0,
+      hasNextPage: false,
+      hasPreviousPage: false,
+    },
+  };
+};
+
 const PendingRiders = () => {
   const axiosSecure = UseAxiosSecure();
   const [selectedRider, setSelectedRider] = useState(null);
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
-  //  Load pending riders
   const {
     isPending,
-    data: riders = [],
+    isFetching,
+    data: result = normalizeResponse([]),
     refetch,
   } = useQuery({
-    queryKey: ["pending-riders"],
+    queryKey: ["pending-riders", page, search],
     queryFn: async () => {
-      const res = await axiosSecure.get("/riders/pending");
-      return res.data;
+      const res = await axiosSecure.get("/riders/pending", {
+        params: { page, limit: PAGE_SIZE, search },
+      });
+      return normalizeResponse(res.data);
     },
   });
 
-  // Approve / Reject handler (ONE FUNCTION)
+  const riders = result.data;
+  const pagination = result.pagination;
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    setPage(1);
+    setSearch(searchInput.trim());
+  };
+
   const handleDecision = async (id, action, email) => {
     const confirm = await Swal.fire({
       title:
@@ -38,25 +81,67 @@ const PendingRiders = () => {
     try {
       await axiosSecure.patch(`/riders/${id}/status`, {
         status: action === "approve" ? "approved" : "rejected",
-        email: email,
+        email,
       });
-      Swal.fire("Success", `Rider ${action}d successfully`, "success");
-      refetch();
-    } catch (err) {
-      console.error(err);
-      Swal.fire("Error", "Could not update rider status", "error");
+
+      await refetch();
+
+      Swal.fire({
+        title: "Success",
+        text: `Rider ${action}d successfully.`,
+        icon: "success",
+        timer: 1300,
+        showConfirmButton: false,
+      });
+
+      setSelectedRider(null);
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Could not update rider status.", "error");
     }
   };
 
   if (isPending) {
-    return <p className="text-center mt-10">Loading...</p>;
+    return <p className="mt-10 text-center">Loading pending riders...</p>;
   }
 
   return (
-    <div>
-      <h2 className="text-3xl font-bold mb-6">Pending Riders</h2>
+    <div className="w-full">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold sm:text-3xl">Pending Riders</h2>
+        <p className="mt-1 text-sm opacity-60">
+          Review and approve rider applications.
+        </p>
+      </div>
 
-      <div className="overflow-x-auto bg-base-100 rounded-lg shadow">
+      <form
+        onSubmit={handleSearch}
+        className="mb-5 flex flex-col gap-3 sm:flex-row"
+      >
+        <input
+          type="search"
+          value={searchInput}
+          onChange={(event) => setSearchInput(event.target.value)}
+          placeholder="Search by name, email, phone or district"
+          className="input input-bordered w-full sm:max-w-md"
+        />
+        <button type="submit" className="btn btn-primary">Search</button>
+        {search && (
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={() => {
+              setSearchInput("");
+              setSearch("");
+              setPage(1);
+            }}
+          >
+            Clear
+          </button>
+        )}
+      </form>
+
+      <div className="overflow-x-auto rounded-xl bg-base-100 shadow">
         <table className="table table-zebra">
           <thead>
             <tr>
@@ -75,7 +160,7 @@ const PendingRiders = () => {
             {riders.length > 0 ? (
               riders.map((rider, index) => (
                 <tr key={rider._id}>
-                  <td>{index + 1}</td>
+                  <td>{(page - 1) * PAGE_SIZE + index + 1}</td>
                   <td>{rider.name}</td>
                   <td>{rider.email}</td>
                   <td>{rider.region}</td>
@@ -86,38 +171,38 @@ const PendingRiders = () => {
                       ? new Date(rider.createdAt).toLocaleDateString()
                       : "N/A"}
                   </td>
-                  <td className="space-x-2">
-                    <button
-                      className="btn btn-xs btn-info"
-                      onClick={() => setSelectedRider(rider)}
-                    >
-                      View
-                    </button>
-
-                    <button
-                      className="btn btn-xs btn-success"
-                      onClick={() =>
-                        handleDecision(rider._id, "approve", rider.email)
-                      }
-                    >
-                      Approve
-                    </button>
-
-                    <button
-                      className="btn btn-xs btn-error"
-                      onClick={() =>
-                        handleDecision(rider._id, "reject", rider.email)
-                      }
-                    >
-                      Reject
-                    </button>
+                  <td>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        className="btn btn-xs btn-info"
+                        onClick={() => setSelectedRider(rider)}
+                      >
+                        View
+                      </button>
+                      <button
+                        className="btn btn-xs btn-success"
+                        onClick={() =>
+                          handleDecision(rider._id, "approve", rider.email)
+                        }
+                      >
+                        Approve
+                      </button>
+                      <button
+                        className="btn btn-xs btn-error"
+                        onClick={() =>
+                          handleDecision(rider._id, "reject", rider.email)
+                        }
+                      >
+                        Reject
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="8" className="text-center text-gray-400 py-6">
-                  No pending riders found
+                <td colSpan="8" className="py-8 text-center text-gray-400">
+                  {search ? "No matching pending riders found." : "No pending riders found."}
                 </td>
               </tr>
             )}
@@ -125,48 +210,73 @@ const PendingRiders = () => {
         </table>
       </div>
 
-      {/* 🔹 Rider Details Modal */}
+      {pagination.totalPages > 0 && (
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm opacity-60">
+            Showing page {pagination.page} of {pagination.totalPages} ·{" "}
+            {pagination.total} total
+          </p>
+          <div className="join">
+            <button
+              className="btn btn-sm join-item"
+              disabled={!pagination.hasPreviousPage || isFetching}
+              onClick={() => setPage((current) => Math.max(current - 1, 1))}
+            >
+              Previous
+            </button>
+            <button className="btn btn-sm join-item btn-ghost" disabled>
+              {pagination.page}
+            </button>
+            <button
+              className="btn btn-sm join-item"
+              disabled={!pagination.hasNextPage || isFetching}
+              onClick={() => setPage((current) => current + 1)}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
+
       {selectedRider && (
         <dialog open className="modal modal-bottom sm:modal-middle">
           <div className="modal-box">
-            <h3 className="font-bold text-lg mb-4">Rider Details</h3>
+            <h3 className="mb-4 text-lg font-bold">Rider Details</h3>
 
             <div className="space-y-2 text-sm">
-              <p>
-                <b>Name:</b> {selectedRider.name}
-              </p>
-              <p>
-                <b>Email:</b> {selectedRider.email}
-              </p>
-              <p>
-                <b>Region:</b> {selectedRider.region}
-              </p>
-              <p>
-                <b>District:</b> {selectedRider.district}
-              </p>
-              <p>
-                <b>Bike:</b> {selectedRider.bike}
-              </p>
-              <p>
-                <b>Status:</b> {selectedRider.status}
-              </p>
+              <p><b>Name:</b> {selectedRider.name}</p>
+              <p><b>Email:</b> {selectedRider.email}</p>
+              <p><b>Region:</b> {selectedRider.region}</p>
+              <p><b>District:</b> {selectedRider.district}</p>
+              <p><b>Bike:</b> {selectedRider.bike}</p>
+              <p><b>Status:</b> {selectedRider.status}</p>
             </div>
 
-            <div className="modal-action">
+            <div className="modal-action flex-wrap">
               <button
                 className="btn btn-success"
-                onClick={() => handleDecision(selectedRider._id, "approve")}
+                onClick={() =>
+                  handleDecision(
+                    selectedRider._id,
+                    "approve",
+                    selectedRider.email,
+                  )
+                }
               >
                 Approve
               </button>
-
               <button
                 className="btn btn-error"
-                onClick={() => handleDecision(selectedRider._id, "reject")}
+                onClick={() =>
+                  handleDecision(
+                    selectedRider._id,
+                    "reject",
+                    selectedRider.email,
+                  )
+                }
               >
                 Reject
               </button>
-
               <button className="btn" onClick={() => setSelectedRider(null)}>
                 Close
               </button>

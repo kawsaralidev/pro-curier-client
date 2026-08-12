@@ -12,10 +12,10 @@ const logos = [logo1, logo2, logo3, logo4, logo5, logo6, logo7];
 
 const ClientLogos = () => {
   return (
-    <section className="py-16 bg-white overflow-hidden">
+    <section className="overflow-hidden border-y border-slate-200 bg-white py-16">
       <div className="container mx-auto px-4">
         {/* Title */}
-        <h2 className="text-3xl font-bold text-center text-blue-950 mb-10">
+        <h2 className="pc-title mb-10 text-center text-3xl">
           Trusted by Our Clients
         </h2>
 
@@ -31,7 +31,7 @@ const ClientLogos = () => {
                 <img
                   src={logo}
                   alt="Client Logo"
-                  className="h-12 md:h-16 object-contain grayscale hover:grayscale-0 transition"
+                  className="h-10 w-auto object-contain grayscale opacity-70 transition hover:grayscale-0 hover:opacity-100 md:h-12"
                 />
               </div>
             ))}
@@ -45,7 +45,7 @@ const ClientLogos = () => {
                 <img
                   src={logo}
                   alt="Client Logo"
-                  className="h-12 md:h-6 object-contain grayscale hover:grayscale-0 transition"
+                  className="h-10 w-auto object-contain grayscale opacity-70 transition hover:grayscale-0 hover:opacity-100 md:h-12"
                 />
               </div>
             ))}

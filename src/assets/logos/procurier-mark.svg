@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+  <title id="title">ProCurier logo</title>
+  <desc id="desc">A delivery box and motion mark for ProCurier</desc>
+  <rect width="96" height="96" rx="24" fill="#0F172A"/>
+  <path d="M20 35.5 48 21l28 14.5v28L48 78 20 63.5z" fill="#0F766E"/>
+  <path d="m48 21 28 14.5L48 50 20 35.5z" fill="#14B8A6"/>
+  <path d="M48 50v28" stroke="#F59E0B" stroke-width="5" stroke-linecap="round"/>
+  <path d="M29 43.5 48 53l19-9.5" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M63 28.5h9" stroke="#F59E0B" stroke-width="5" stroke-linecap="round"/>
+</svg>

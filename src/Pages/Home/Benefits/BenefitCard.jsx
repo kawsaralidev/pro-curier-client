@@ -4,7 +4,7 @@ const BenefitCard = ({ image, title, description }) => {
   return (
     <div className="card card-side bg-base-100 shadow-md hover:shadow-lg transition p-5">
       {/* Left Image */}
-      <figure className="pl-6">
+      <figure className="pl-4">
         <img src={image} alt={title} className="w-60 h-35 object-contain" />
       </figure>
 

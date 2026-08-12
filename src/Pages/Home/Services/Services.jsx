@@ -1,77 +1,107 @@
 import {
   FaShippingFast,
   FaMapMarkedAlt,
-  FaWarehouse,
   FaMoneyBillWave,
   FaBuilding,
   FaUndo,
+  FaWarehouse,
 } from "react-icons/fa";
-import Service from "./Service";
 
 const services = [
   {
-    title: "Express & Standard Delivery",
-    description:
-      "We deliver parcels within 24–72 hours in Dhaka, Chittagong, Sylhet, Khulna, and Rajshahi. Express delivery available in Dhaka within 4–6 hours from pick-up to drop-off.",
+    number: "01",
+    title: "Express Delivery",
+    description: "Fast, dependable delivery for time-sensitive parcels.",
     icon: FaShippingFast,
   },
   {
+    number: "02",
     title: "Nationwide Delivery",
-    description:
-      "We deliver parcels nationwide with home delivery in every district, ensuring your products reach customers within 48–72 hours.",
+    description: "Reach customers across Bangladesh with broad coverage.",
     icon: FaMapMarkedAlt,
   },
   {
-    title: "Fulfillment Solution",
-    description:
-      "We also offer customized service with inventory management support, online order processing, packaging, and after sales support.",
-    icon: FaWarehouse,
-  },
-  {
-    title: "Cash on Home Delivery",
-    description:
-      "100% cash on delivery anywhere in Bangladesh with guaranteed safety of your product.",
+    number: "03",
+    title: "Cash on Delivery",
+    description: "Convenient payment on delivery with shipment visibility.",
     icon: FaMoneyBillWave,
   },
   {
-    title: "Corporate Service / Contract In Logistics",
-    description:
-      "Customized corporate services which includes warehouse and inventory management support.",
+    number: "04",
+    title: "Corporate Logistics",
+    description: "Organized parcel operations for growing businesses.",
     icon: FaBuilding,
   },
   {
+    number: "05",
     title: "Parcel Return",
-    description:
-      "Through our reverse logistics facility we allow end customers to return or exchange their products with online business merchants.",
+    description: "A smoother reverse-delivery flow for returns and exchanges.",
     icon: FaUndo,
+  },
+  {
+    number: "06",
+    title: "Fulfillment",
+    description:
+      "Connected packing, dispatch, delivery, and after-sales operations.",
+    icon: FaWarehouse,
   },
 ];
 
-const Services = () => {
-  return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-12 max-w-2xl mx-auto">
-          <h2 className="text-3xl md:text-4xl text-blue-950 font-bold mb-4">
-            Our Services
-          </h2>
-          <p className="text-gray-600 text-lg leading-relaxed">
-            Enjoy fast A-level parcel delivery with real-time tracking and zero
-            hassle— from personal packages to business shipments. We deliver on
-            time, every time.
-          </p>
-        </div>
+const Services = () => (
+  <section className="bg-white sm:py-3">
+    <div className="pc-container">
+      <div className="max-w-3xl">
+        <span className="pc-kicker">Our services</span>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service, index) => (
-            <Service key={index} service={service} />
-          ))}
-        </div>
+        <h2 className="pc-title mt-4 text-3xl sm:text-4xl lg:text-5xl">
+          Delivery solutions built
+          <span className="text-teal-700"> around real needs.</span>
+        </h2>
+
+        <p className="pc-muted mt-4 max-w-2xl text-base leading-7 sm:text-lg">
+          From a single shipment to business-scale logistics, ProCurier keeps
+          delivery simple, visible, and dependable.
+        </p>
       </div>
-    </section>
-  );
-};
+
+      <div className="mt-12 grid border-y border-slate-200 sm:grid-cols-2 lg:grid-cols-3">
+        {services.map((service, index) => {
+          const Icon = service.icon;
+
+          return (
+            <div
+              key={service.title}
+              className={`group flex gap-5 border-slate-200 py-7 sm:px-6 lg:px-7 ${
+                index % 2 === 0 ? "sm:border-r" : ""
+              } ${
+                index === 2 || index === 5 ? "lg:border-r-0" : "lg:border-r"
+              } ${index >= 3 ? "border-t" : ""}`}
+            >
+              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-teal-50 text-lg text-teal-700 transition-all duration-300 group-hover:bg-teal-700 group-hover:text-white">
+                <Icon />
+              </div>
+
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-xs font-bold text-amber-500">
+                    {service.number}
+                  </span>
+
+                  <h3 className="font-extrabold text-slate-900">
+                    {service.title}
+                  </h3>
+                </div>
+
+                <p className="mt-2 text-sm leading-6 text-slate-500">
+                  {service.description}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+);
 
 export default Services;

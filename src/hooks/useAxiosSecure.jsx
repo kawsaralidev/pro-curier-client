@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import UseAuth from "./useAuth";
 
 const axiosSecure = axios.create({
-  baseURL: "https://pro-curier-server.onrender.com",
+  baseURL: import.meta.env.VITE_API_URL,
 });
 const UseAxiosSecure = () => {
   const { user, logOut } = UseAuth();

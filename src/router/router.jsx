@@ -24,6 +24,8 @@ import PendingDelivery from "../Pages/Dashboard/PendingDelivery/PendingDelivery"
 import CompletedDelivery from "../Pages/Dashboard/CompletedDelivery/CompletedDelivery";
 import MyEarnings from "../Pages/Dashboard/MyEarnings/MyEarnings";
 import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
+import ParcelDetails from "../Pages/Dashboard/ParcelDetails/ParcelDetails";
+import Profile from "../Pages/Dashboard/Profile/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -94,12 +96,20 @@ export const router = createBrowserRouter([
         Component: MyParcels,
       },
       {
+        path: "parcel-details/:id",
+        Component: ParcelDetails,
+      },
+      {
         path: "payment/:parcelId",
         Component: Payment,
       },
       {
         path: "paymentHistory",
         Component: PaymentHistory,
+      },
+      {
+        path: "profile",
+        Component: Profile,
       },
 
       {

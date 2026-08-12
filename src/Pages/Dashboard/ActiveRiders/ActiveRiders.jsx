@@ -1,42 +1,69 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Swal from "sweetalert2";
 import UseAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 
+const PAGE_SIZE = 10;
+
+const normalizeResponse = (response) => {
+  if (Array.isArray(response)) {
+    return {
+      data: response,
+      pagination: {
+        total: response.length,
+        page: 1,
+        limit: response.length || PAGE_SIZE,
+        totalPages: response.length ? 1 : 0,
+        hasNextPage: false,
+        hasPreviousPage: false,
+      },
+    };
+  }
+
+  return {
+    data: Array.isArray(response?.data) ? response.data : [],
+    pagination: response?.pagination || {
+      total: 0,
+      page: 1,
+      limit: PAGE_SIZE,
+      totalPages: 0,
+      hasNextPage: false,
+      hasPreviousPage: false,
+    },
+  };
+};
+
 const ActiveRiders = () => {
   const axiosSecure = UseAxiosSecure();
 
+  const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
-  const [activeRiders, setActiveRiders] = useState([]);
+  const [page, setPage] = useState(1);
 
-  //  Load active riders
   const {
-    data: riders = [],
+    data: result = normalizeResponse([]),
     isPending,
+    isFetching,
     refetch,
   } = useQuery({
-    queryKey: ["active-riders"],
+    queryKey: ["active-riders", page, search],
     queryFn: async () => {
-      const res = await axiosSecure.get("/riders/active");
-      return res.data;
+      const res = await axiosSecure.get("/riders/active", {
+        params: { page, limit: PAGE_SIZE, search },
+      });
+      return normalizeResponse(res.data);
     },
   });
 
-  //  Sync React Query data → useState
-  useEffect(() => {
-    setActiveRiders(riders);
-  }, [riders]);
+  const riders = result.data;
+  const pagination = result.pagination;
 
-  //  Client-side search on state
-  const filteredRiders = activeRiders.filter((rider) => {
-    const key = search.toLowerCase();
-    return (
-      rider.name?.toLowerCase().includes(key) ||
-      rider.phone?.toLowerCase().includes(key)
-    );
-  });
+  const handleSearch = (event) => {
+    event.preventDefault();
+    setPage(1);
+    setSearch(searchInput.trim());
+  };
 
-  //  Deactivate rider
   const handleDeactivate = async (id) => {
     const confirm = await Swal.fire({
       title: "Deactivate this rider?",
@@ -53,40 +80,62 @@ const ActiveRiders = () => {
         status: "inactive",
       });
 
-      Swal.fire("Success", "Rider deactivated", "success");
+      await refetch();
 
-      // update UI immediately (state)
-      setActiveRiders((prev) => prev.filter((rider) => rider._id !== id));
-
-      // optional: sync with server again
-      refetch();
-    } catch (err) {
-      console.error(err);
-      Swal.fire("Error", "Could not deactivate rider", "error");
+      Swal.fire({
+        title: "Success",
+        text: "Rider deactivated.",
+        icon: "success",
+        timer: 1300,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Could not deactivate rider.", "error");
     }
   };
 
   if (isPending) {
-    return <p className="text-center mt-10">Loading...</p>;
+    return <p className="mt-10 text-center">Loading active riders...</p>;
   }
 
   return (
-    <div>
-      <h2 className="text-3xl font-bold mb-6">Active Riders</h2>
-
-      {/* Search */}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search by name or phone"
-          className="input input-bordered w-full md:w-1/3"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+    <div className="w-full">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold sm:text-3xl">Active Riders</h2>
+        <p className="mt-1 text-sm opacity-60">
+          Search and manage approved riders.
+        </p>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto bg-base-100 rounded-lg shadow">
+      <form
+        onSubmit={handleSearch}
+        className="mb-5 flex flex-col gap-3 sm:flex-row"
+      >
+        <input
+          type="search"
+          placeholder="Search by name, phone, email or district"
+          className="input input-bordered w-full sm:max-w-md"
+          value={searchInput}
+          onChange={(event) => setSearchInput(event.target.value)}
+        />
+        <button type="submit" className="btn btn-primary">Search</button>
+        {search && (
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={() => {
+              setSearchInput("");
+              setSearch("");
+              setPage(1);
+            }}
+          >
+            Clear
+          </button>
+        )}
+      </form>
+
+      <div className="overflow-x-auto rounded-xl bg-base-100 shadow">
         <table className="table table-zebra">
           <thead>
             <tr>
@@ -103,12 +152,12 @@ const ActiveRiders = () => {
           </thead>
 
           <tbody>
-            {filteredRiders.length > 0 ? (
-              filteredRiders.map((rider, index) => (
+            {riders.length > 0 ? (
+              riders.map((rider, index) => (
                 <tr key={rider._id}>
-                  <td>{index + 1}</td>
+                  <td>{(page - 1) * PAGE_SIZE + index + 1}</td>
                   <td>{rider.name}</td>
-                  <td>{rider.phone || "N/A"}</td>
+                  <td>{rider.phone || rider.phoneNumber || "N/A"}</td>
                   <td>{rider.email}</td>
                   <td>{rider.region}</td>
                   <td>{rider.district}</td>
@@ -128,14 +177,42 @@ const ActiveRiders = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="9" className="text-center text-gray-400 py-6">
-                  No active riders found
+                <td colSpan="9" className="py-8 text-center text-gray-400">
+                  {search ? "No matching active riders found." : "No active riders found."}
                 </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
+
+      {pagination.totalPages > 0 && (
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm opacity-60">
+            Showing page {pagination.page} of {pagination.totalPages} ·{" "}
+            {pagination.total} total
+          </p>
+          <div className="join">
+            <button
+              className="btn btn-sm join-item"
+              disabled={!pagination.hasPreviousPage || isFetching}
+              onClick={() => setPage((current) => Math.max(current - 1, 1))}
+            >
+              Previous
+            </button>
+            <button className="btn btn-sm join-item btn-ghost" disabled>
+              {pagination.page}
+            </button>
+            <button
+              className="btn btn-sm join-item"
+              disabled={!pagination.hasNextPage || isFetching}
+              onClick={() => setPage((current) => current + 1)}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
