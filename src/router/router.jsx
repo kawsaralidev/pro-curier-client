@@ -26,6 +26,7 @@ import MyEarnings from "../Pages/Dashboard/MyEarnings/MyEarnings";
 import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
 import ParcelDetails from "../Pages/Dashboard/ParcelDetails/ParcelDetails";
 import Profile from "../Pages/Dashboard/Profile/Profile";
+import AboutUs from "../Pages/AboutUs/AboutUs";
 
 export const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
         path: "/coverage",
         Component: Coverage,
         loader: () => fetch("./warehouses.json"),
+      },
+      {
+        path: "/aboutus",
+        Component: AboutUs,
       },
       {
         path: "/forbiden",

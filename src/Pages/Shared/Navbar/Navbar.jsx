@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router";
-import { FaChevronDown, FaUserCircle, FaTachometerAlt, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaChevronDown,
+  FaUserCircle,
+  FaTachometerAlt,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import UseAuth from "../../../hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
 import logo from "../../../assets/logos/procurier-mark.svg";
@@ -20,19 +25,39 @@ const Navbar = () => {
   };
 
   const linkClass = ({ isActive }) =>
-    `relative rounded-lg px-3 py-2 text-sm font-semibold transition ${
+    `relative rounded-lg px-3 py-2 text-sm text-black font-semibold transition ${
       isActive
-        ? "bg-teal-50 text-teal-700"
-        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+        ? "bg-teal-50 text-teal-00"
+        : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
     }`;
 
   const navItems = (
     <>
-      <li><NavLink className={linkClass} to="/">Home</NavLink></li>
-      <li><NavLink className={linkClass} to="/sendParcel">Send a Parcel</NavLink></li>
-      <li><NavLink className={linkClass} to="/coverage">Coverage</NavLink></li>
-      <li><NavLink className={linkClass} to="/beARider">Be A Rider</NavLink></li>
-      <li><NavLink className={linkClass} to="/aboutus">About Us</NavLink></li>
+      <li>
+        <NavLink className={linkClass} to="/">
+          Home
+        </NavLink>
+      </li>
+      <li>
+        <NavLink className={linkClass} to="/sendParcel">
+          Send a Parcel
+        </NavLink>
+      </li>
+      <li>
+        <NavLink className={linkClass} to="/coverage">
+          Coverage
+        </NavLink>
+      </li>
+      <li>
+        <NavLink className={linkClass} to="/beARider">
+          Be A Rider
+        </NavLink>
+      </li>
+      <li>
+        <NavLink className={linkClass} to="/aboutus">
+          About Us
+        </NavLink>
+      </li>
     </>
   );
 
@@ -48,8 +73,19 @@ const Navbar = () => {
               aria-label="Open navigation menu"
               className="btn btn-ghost btn-square rounded-xl text-slate-700 hover:bg-slate-100"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h10M4 18h16" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h10M4 18h16"
+                />
               </svg>
             </button>
             <ul
@@ -59,7 +95,10 @@ const Navbar = () => {
               {navItems}
               {user && (
                 <li className="mt-2 border-t border-slate-100 pt-2">
-                  <Link to="/dashboard" className="rounded-lg font-semibold text-slate-700 hover:bg-teal-50 hover:text-teal-700">
+                  <Link
+                    to="/dashboard"
+                    className="rounded-lg font-semibold text-slate-700 hover:bg-teal-50 hover:text-teal-700"
+                  >
                     Dashboard
                   </Link>
                 </li>
@@ -69,7 +108,10 @@ const Navbar = () => {
         </div>
 
         {/* Brand */}
-        <Link to="/" className="group flex shrink-0 items-center gap-2.5 lg:min-w-[220px]">
+        <Link
+          to="/"
+          className="group flex shrink-0 items-center gap-2.5 lg:min-w-[220px]"
+        >
           <img
             src={logo}
             alt="ProCurier"
@@ -87,7 +129,9 @@ const Navbar = () => {
 
         {/* Centered navigation */}
         <nav className="absolute left-1/2 hidden -translate-x-1/2 lg:block">
-          <ul className="menu menu-horizontal flex-nowrap gap-1 p-0">{navItems}</ul>
+          <ul className="menu menu-horizontal flex-nowrap gap-1 p-0">
+            {navItems}
+          </ul>
         </nav>
 
         {/* Right side auth/profile */}
@@ -113,7 +157,9 @@ const Navbar = () => {
                 <span className="hidden max-w-24 truncate text-left text-sm font-bold text-slate-800 xl:block">
                   {user?.displayName || "Account"}
                 </span>
-                <FaChevronDown className={`hidden text-[10px] text-slate-400 transition sm:block ${profileOpen ? "rotate-180" : ""}`} />
+                <FaChevronDown
+                  className={`hidden text-[10px] text-slate-400 transition sm:block ${profileOpen ? "rotate-180" : ""}`}
+                />
               </button>
 
               {profileOpen && (
@@ -121,13 +167,21 @@ const Navbar = () => {
                   <div className="bg-slate-950 px-4 py-4 text-white">
                     <div className="flex items-center gap-3">
                       {user?.photoURL ? (
-                        <img src={user.photoURL} alt="" className="h-10 w-10 rounded-xl object-cover" />
+                        <img
+                          src={user.photoURL}
+                          alt=""
+                          className="h-10 w-10 rounded-xl object-cover"
+                        />
                       ) : (
                         <FaUserCircle className="h-10 w-10 text-slate-400" />
                       )}
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-bold">{user?.displayName || "ProCurier User"}</p>
-                        <p className="truncate text-xs text-slate-400">{user?.email}</p>
+                        <p className="truncate text-sm font-bold">
+                          {user?.displayName || "ProCurier User"}
+                        </p>
+                        <p className="truncate text-xs text-slate-400">
+                          {user?.email}
+                        </p>
                       </div>
                     </div>
                   </div>

@@ -70,6 +70,7 @@ const HowItWorks = () => (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5 lg:gap-3">
           {steps.map((step, index) => {
             const Icon = step.icon;
+            const amber = step.accent === "amber";
             const last = index === steps.length - 1;
 
             return (
@@ -77,20 +78,19 @@ const HowItWorks = () => (
                 <article className="group relative h-full rounded-[1.5rem] border border-slate-200 bg-white px-5 pb-6 pt-5 shadow-[0_8px_30px_rgba(15,23,42,.055)] transition-all duration-300 hover:-translate-y-2 hover:border-teal-200 hover:shadow-[0_20px_45px_rgba(15,118,110,.12)]">
                   <div className="flex items-start justify-between">
                     <div
-                      className={`relative z-10 grid h-[62px] w-[62px] place-items-center rounded-2xl shadow-sm transition-all duration-300 group-hover:scale-105 ${
-                        last
-                          ? "bg-amber-400 text-slate-950"
-                          : "bg-teal-700 text-white"
+                      className={`relative z-10 grid h-16 w-16 place-items-center rounded-2xl text-2xl transition-all duration-300 group-hover:scale-105 ${
+                        amber
+                          ? "bg-amber-50 text-amber-600 group-hover:bg-amber-400 group-hover:text-slate-950"
+                          : "bg-teal-50 text-teal-700 group-hover:bg-teal-700 group-hover:text-white"
                       }`}
                     >
-                      <Icon className="text-xl" />
-
-                      <span className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full border-2 border-white bg-slate-950 font-mono text-[9px] font-bold text-white">
+                      <Icon />
+                      <span className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full border-2 border-white bg-amber-500 font-mono text-[9px] font-bold text-black">
                         {step.number}
                       </span>
                     </div>
 
-                    <span className="font-mono text-[10px] font-bold tracking-widest text-slate-300">
+                    <span className="font-mono text-[10px] text-teal-600 font-bold tracking-widest">
                       STEP
                     </span>
                   </div>

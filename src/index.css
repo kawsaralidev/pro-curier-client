@@ -100,3 +100,351 @@ img { max-width: 100%; }
   height: 1px;
   background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
 }
+
+
+/* =========================================================
+   PROCURier DASHBOARD DESIGN SYSTEM
+   Visual-only styling. Existing dashboard functionality is untouched.
+========================================================= */
+
+.dashboard-shell {
+  --dashboard-navy: #0f172a;
+  --dashboard-teal: #0f766e;
+  --dashboard-teal-soft: #f0fdfa;
+  --dashboard-amber: #f59e0b;
+  --dashboard-surface: #f8fafc;
+  --dashboard-border: #e2e8f0;
+  background: var(--dashboard-surface);
+  color: var(--dashboard-navy);
+}
+
+.dashboard-shell .drawer-content {
+  background:
+    radial-gradient(circle at 85% 5%, rgba(20,184,166,.06), transparent 22rem),
+    var(--dashboard-surface);
+}
+
+.dashboard-topbar {
+  min-height: 68px;
+  border-bottom: 1px solid rgba(226,232,240,.9);
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 8px 30px rgba(15,23,42,.055);
+  backdrop-filter: blur(16px);
+}
+
+.dashboard-menu-button {
+  color: #475569;
+}
+.dashboard-menu-button:hover {
+  background: #f0fdfa;
+  color: #0f766e;
+}
+
+.dashboard-topbar-mark,
+.dashboard-brand-mark {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 13px;
+  background: linear-gradient(135deg,#0f766e,#14b8a6);
+  color: white;
+  box-shadow: 0 8px 20px rgba(15,118,110,.2);
+}
+.dashboard-topbar-mark { width: 34px; height: 34px; font-size: 20px; }
+.dashboard-brand-mark { width: 40px; height: 40px; font-size: 23px; }
+
+.dashboard-avatar {
+  display: grid;
+  height: 36px;
+  width: 36px;
+  place-items: center;
+  border-radius: 999px;
+  background: linear-gradient(135deg,#0f766e,#14b8a6);
+  color: white;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 0 0 3px #ecfdf5;
+}
+
+.dashboard-profile-trigger:hover {
+  background: #f8fafc;
+}
+.dashboard-profile-menu {
+  border: 1px solid #e2e8f0;
+  background: rgba(255,255,255,.98);
+  box-shadow: 0 24px 60px rgba(15,23,42,.16);
+  backdrop-filter: blur(16px);
+}
+.dashboard-menu-item {
+  color: #334155;
+}
+.dashboard-menu-item:hover {
+  background: #f0fdfa;
+  color: #0f766e;
+}
+.dashboard-menu-item.dashboard-logout {
+  color: #e11d48;
+}
+.dashboard-menu-item.dashboard-logout:hover {
+  background: #fff1f2;
+  color: #be123c;
+}
+
+.dashboard-sidebar {
+  width: 256px;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(20,184,166,.16), transparent 20rem),
+    #0b1220;
+  border-right: 1px solid rgba(255,255,255,.06);
+  color: #cbd5e1;
+  box-shadow: 12px 0 40px rgba(15,23,42,.10);
+}
+.dashboard-brand {
+  padding: 18px 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.dashboard-role-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 12px 6px;
+  padding: 8px 10px;
+  border: 1px solid rgba(20,184,166,.15);
+  border-radius: 12px;
+  background: rgba(20,184,166,.07);
+  color: #99f6e4;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .03em;
+  text-transform: capitalize;
+}
+.dashboard-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #2dd4bf;
+  box-shadow: 0 0 0 4px rgba(45,212,191,.1);
+}
+
+.dashboard-sidebar-menu {
+  padding: 10px;
+}
+.dashboard-nav-link {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 12px;
+  color: #94a3b8 !important;
+  font-size: 13px;
+  font-weight: 700;
+  transition: .2s ease;
+}
+.dashboard-nav-link svg {
+  flex-shrink: 0;
+  font-size: 17px;
+}
+.dashboard-nav-link:hover {
+  background: rgba(255,255,255,.07) !important;
+  color: #f8fafc !important;
+  transform: translateX(2px);
+}
+.dashboard-nav-active {
+  background: linear-gradient(90deg, rgba(20,184,166,.20), rgba(20,184,166,.06)) !important;
+  color: #5eead4 !important;
+  box-shadow: inset 3px 0 0 #14b8a6;
+}
+.dashboard-sidebar-footer {
+  padding: 12px;
+}
+
+.dashboard-content {
+  min-height: calc(100vh - 68px);
+  padding: 28px clamp(14px, 2.5vw, 34px) 44px;
+}
+
+/* Fix every dashboard page's DaisyUI base colors */
+.dashboard-content .bg-base-100,
+.dashboard-content .card,
+.dashboard-content .table,
+.dashboard-content .modal-box {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+.dashboard-content .card,
+.dashboard-content .rounded-xl.border,
+.dashboard-content .rounded-2xl.border {
+  border-color: #e2e8f0;
+  box-shadow: 0 12px 35px rgba(15,23,42,.055);
+}
+
+.dashboard-content .card:hover {
+  box-shadow: 0 18px 45px rgba(15,23,42,.08);
+}
+
+.dashboard-content .input,
+.dashboard-content .select,
+.dashboard-content .textarea {
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+.dashboard-content .input::placeholder,
+.dashboard-content .textarea::placeholder {
+  color: #94a3b8;
+}
+.dashboard-content .input:focus,
+.dashboard-content .select:focus,
+.dashboard-content .textarea:focus {
+  border-color: #0f766e;
+  outline: 2px solid rgba(15,118,110,.12);
+  outline-offset: 0;
+}
+
+.dashboard-content .table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.dashboard-content .table thead {
+  background: #f8fafc;
+}
+.dashboard-content .table thead th {
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.dashboard-content .table tbody td {
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+}
+.dashboard-content .table-zebra tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+.dashboard-content .table tbody tr:hover {
+  background: #f0fdfa;
+}
+
+.dashboard-content .badge {
+  border: 0;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+.dashboard-content .btn-primary {
+  border-color: #0f766e;
+  background: #0f766e;
+  color: #fff;
+}
+.dashboard-content .btn-primary:hover {
+  border-color: #115e59;
+  background: #115e59;
+}
+.dashboard-content .btn-outline {
+  border-color: #cbd5e1;
+  color: #334155;
+  background: #fff;
+}
+.dashboard-content .btn-outline:hover {
+  border-color: #0f766e;
+  background: #f0fdfa;
+  color: #0f766e;
+}
+
+/* Dashboard page headings */
+.dashboard-content > div > h1,
+.dashboard-content > div > h2 {
+  color: #0f172a;
+}
+.dashboard-content p {
+  color: #64748b;
+}
+
+/* Dashboard home metric cards */
+.dashboard-content .dashboard-stat-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 12px 35px rgba(15,23,42,.06);
+}
+.dashboard-content .dashboard-stat-card::after {
+  content: "";
+  position: absolute;
+  right: -35px;
+  top: -45px;
+  width: 120px;
+  height: 120px;
+  border-radius: 999px;
+  background: #f0fdfa;
+}
+
+/* Mobile dashboard */
+@media (max-width: 1023px) {
+  .dashboard-sidebar {
+    width: 256px;
+  }
+  .dashboard-content {
+    padding-top: 22px;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-topbar {
+    min-height: 62px;
+  }
+  .dashboard-content {
+    padding: 20px 12px 34px;
+  }
+  .dashboard-profile-menu {
+    width: min(16rem, calc(100vw - 1.5rem));
+  }
+  .dashboard-content .table {
+    min-width: 720px;
+  }
+}
+
+
+.dashboard-content .dashboard-panel {
+  border: 1px solid #e2e8f0;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 14px 40px rgba(15,23,42,.055);
+}
+.dashboard-content .dashboard-panel .card-title {
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 800;
+}
+.dashboard-content .dashboard-stat-card .card-body {
+  position: relative;
+  z-index: 1;
+}
+.dashboard-content .dashboard-stat-card .card-body > div p {
+  color: #64748b;
+}
+.dashboard-content .dashboard-stat-card .card-body h2 {
+  color: #0f766e;
+}
+.dashboard-content .alert {
+  border-radius: 16px;
+}
+
+
+.dashboard-content h1,
+.dashboard-content h2,
+.dashboard-content h3,
+.dashboard-content .card-title {
+  color: #0f172a;
+}
+.dashboard-content .text-primary { color: #0f766e !important; }
+.dashboard-content .text-info { color: #0f766e !important; }
+.dashboard-content .text-success { color: #0f766e !important; }
+.dashboard-content .text-warning { color: #d97706 !important; }
+.dashboard-content .text-error { color: #e11d48 !important; }
+.dashboard-content .bg-primary\/5 { background-color: #f0fdfa !important; }
+.dashboard-content .bg-success\/5 { background-color: #f0fdfa !important; }
+.dashboard-content .bg-warning\/5 { background-color: #fffbeb !important; }

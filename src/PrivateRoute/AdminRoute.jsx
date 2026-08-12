@@ -1,11 +1,12 @@
 import React, { Children } from "react";
 import UseAuth from "../hooks/useAuth";
 import useUserRole from "../hooks/useUserRole";
-import { Navigate } from "react-router";
+import { Navigate, useLocation } from "react-router";
 
 const AdminRoute = ({ children }) => {
   const { user, loading } = UseAuth();
   const { role, roleLoading } = useUserRole();
+  const location = useLocation();
 
   if (loading || roleLoading) {
     return <span className="loading loading-spinner loading-xl"></span>;

@@ -3,6 +3,7 @@ import { CiDeliveryTruck } from "react-icons/ci";
 import {
   FaCheckCircle,
   FaClock,
+  FaHome,
   FaMoneyCheckAlt,
   FaMotorcycle,
   FaSearchLocation,
@@ -11,11 +12,14 @@ import {
   FaUserEdit,
   FaUserShield,
   FaWallet,
+  FaChevronDown,
+  FaUserCircle,
+  FaCog,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { Link, NavLink, Outlet } from "react-router";
 import useUserRole from "../hooks/useUserRole";
 import UseAuth from "../hooks/useAuth";
-import { FaChevronDown, FaUserCircle } from "react-icons/fa";
 
 const DashboardLayout = () => {
   const { role, roleLoading } = useUserRole();
@@ -29,17 +33,24 @@ const DashboardLayout = () => {
       setProfileOpen(false);
     }
   };
+
+  const navClass = ({ isActive }) =>
+    `dashboard-nav-link rounded-xl ${
+      isActive ? "dashboard-nav-active" : ""
+    }`;
+
   return (
-    <div className="drawer lg:drawer-open min-h-screen bg-slate-50">
+    <div data-theme="light" className="dashboard-shell drawer lg:drawer-open min-h-screen">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content">
-        {/* Navbar */}
-        <nav className="navbar sticky top-0 z-40 w-full border-b border-slate-200 bg-white/95 px-2 shadow-sm backdrop-blur sm:px-4">
+
+      <div className="drawer-content dashboard-main">
+        {/* Dashboard topbar */}
+        <nav className="dashboard-topbar navbar sticky top-0 z-40 w-full px-3 sm:px-5">
           <div className="flex-none">
             <label
               htmlFor="my-drawer-4"
               aria-label="open sidebar"
-              className="btn btn-square btn-ghost"
+              className="dashboard-menu-button btn btn-square btn-ghost lg:hidden"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -49,72 +60,100 @@ const DashboardLayout = () => {
                 strokeWidth="2"
                 fill="none"
                 stroke="currentColor"
-                className="my-1.5 inline-block size-4"
+                className="size-5"
               >
-                <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
-                <path d="M9 4v16"></path>
-                <path d="M14 10l2 2l-2 2"></path>
+                <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
+                <path d="M9 4v16" />
+                <path d="M14 10l2 2l-2 2" />
               </svg>
             </label>
           </div>
 
-          <div className="flex-1 px-3">
-            <p className="text-sm font-extrabold text-slate-900 sm:text-base">ProCurier Dashboard</p>
-            <p className="hidden text-xs text-slate-500 sm:block">
-              Manage your delivery activity
-            </p>
+          <div className="flex-1 px-2 sm:px-4">
+            <div className="flex items-center gap-3">
+              <div className="dashboard-topbar-mark">
+                <CiDeliveryTruck />
+              </div>
+              <div>
+                <p className="text-sm font-extrabold tracking-tight text-slate-950 sm:text-base">
+                  ProCurier Dashboard
+                </p>
+                <p className="hidden text-[11px] font-medium text-slate-500 sm:block">
+                  Manage your delivery activity
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="relative flex-none">
             <button
               type="button"
               onClick={() => setProfileOpen((open) => !open)}
-              className="btn btn-ghost flex h-auto min-h-10 gap-2 px-2"
+              className="dashboard-profile-trigger btn btn-ghost flex h-auto min-h-10 gap-2 px-1.5 sm:px-2"
               aria-expanded={profileOpen}
             >
               {user?.photoURL ? (
                 <img
                   src={user.photoURL}
                   alt={user.displayName || "Profile"}
-                  className="h-9 w-9 rounded-full object-cover"
+                  className="h-9 w-9 rounded-full object-cover ring-2 ring-teal-100"
                 />
               ) : (
-                <FaUserCircle className="text-3xl opacity-70" />
+                <span className="dashboard-avatar">
+                  {(user?.displayName || user?.email || "P")
+                    .charAt(0)
+                    .toUpperCase()}
+                </span>
               )}
-              <span className="hidden max-w-28 truncate text-left sm:block">
-                {user?.displayName || user?.email || "Profile"}
+
+              <span className="hidden max-w-32 truncate text-left sm:block">
+                <span className="block text-xs font-bold text-slate-900">
+                  {user?.displayName || "ProCurier User"}
+                </span>
+                <span className="block text-[10px] text-slate-500">
+                  {role || "user"}
+                </span>
               </span>
-              <FaChevronDown className="text-xs opacity-60" />
+
+              <FaChevronDown className="text-[10px] text-slate-400" />
             </button>
 
             {profileOpen && (
-              <div className="absolute right-0 top-12 z-50 w-60 rounded-2xl border border-base-300 bg-base-100 p-2 shadow-xl">
-                <div className="border-b border-base-300 px-3 py-3">
-                  <p className="truncate font-semibold">
+              <div className="dashboard-profile-menu absolute right-0 top-12 z-50 w-64 rounded-2xl p-2">
+                <div className="border-b border-slate-100 px-3 py-3">
+                  <p className="truncate text-sm font-extrabold text-slate-900">
                     {user?.displayName || "ProCurier User"}
                   </p>
-                  <p className="truncate text-xs opacity-60">{user?.email}</p>
+                  <p className="truncate text-xs text-slate-500">
+                    {user?.email}
+                  </p>
                 </div>
+
                 <Link
                   to="/dashboard/profile"
                   onClick={() => setProfileOpen(false)}
-                  className="btn btn-ghost mt-2 w-full justify-start"
+                  className="dashboard-menu-item mt-2 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold"
                 >
-                  <FaUserEdit /> Profile
+                  <FaUserEdit />
+                  Profile
                 </Link>
+
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="btn btn-ghost w-full justify-start text-error"
+                  className="dashboard-menu-item dashboard-logout flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold"
                 >
-                  <FaUserShield /> Logout
+                  <FaSignOutAlt />
+                  Logout
                 </button>
               </div>
             )}
           </div>
         </nav>
-        {/* Page content here */}
-        <Outlet></Outlet>
+
+        <main className="dashboard-content">
+          <Outlet />
+        </main>
       </div>
 
       <div className="drawer-side is-drawer-close:overflow-visible">
@@ -122,197 +161,228 @@ const DashboardLayout = () => {
           htmlFor="my-drawer-4"
           aria-label="close sidebar"
           className="drawer-overlay"
-        ></label>
-        <div className="flex min-h-full flex-col items-start border-r border-slate-200 bg-slate-950 text-slate-200 is-drawer-close:w-14 is-drawer-open:w-64">
-          {/* Sidebar content here */}
-          <ul className="menu w-full grow gap-1 p-2">
-            {/* List item */}
+        />
+
+        <aside className="dashboard-sidebar flex min-h-full w-64 flex-col items-start">
+          <div className="dashboard-brand w-full">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="dashboard-brand-mark">
+                <CiDeliveryTruck />
+              </div>
+
+              <div className="">
+                <p className="text-base font-black tracking-tight text-white">
+                  ProCurier
+                </p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+                  Delivery system
+                </p>
+              </div>
+            </Link>
+          </div>
+
+          <div className="dashboard-role-badge ">
+            <span className="dashboard-status-dot" />
+            <span>{roleLoading ? "Loading role..." : `${role || "user"} workspace`}</span>
+          </div>
+
+          <ul className="menu dashboard-sidebar-menu w-full grow gap-1.5 p-2">
+            {/* Common navigation */}
             <li>
-              <Link
+              <NavLink
                 to="/"
-                className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                className={navClass}
                 data-tip="Homepage"
               >
-                {/* Home icon */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="2"
-                  fill="none"
-                  stroke="currentColor"
-                  className="my-1.5 inline-block size-4"
-                >
-                  <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
-                  <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                </svg>
-                <span className="is-drawer-close:hidden">Homepage</span>
-              </Link>
-            </li>
-
-            {/* our dashboard links */}
-            <li>
-              <NavLink
-                className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="MyParcels"
-                to="/dashboard/myParcels"
-              >
-                <CiDeliveryTruck />
-                <span className="is-drawer-close:hidden">My Parcels</span>
+                <FaHome />
+                <span>Homepage</span>
               </NavLink>
             </li>
 
-            <li>
-              <NavLink
-                className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Payment History"
-                to="/dashboard/paymentHistory"
-              >
-                <FaMoneyCheckAlt />
-                <span className="is-drawer-close:hidden">Payment History</span>
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
-                className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Update Profile"
-                to="/dashboard/profile"
-              >
-                <FaUserEdit />
-                <span className="is-drawer-close:hidden">Update Profile</span>
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
-                className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Track a Package"
-                to="/dashboard/track"
-              >
-                <FaSearchLocation />
-                <span className="is-drawer-close:hidden">Track a Package</span>
-              </NavLink>
-            </li>
-            {/* riders links  */}
-            {!roleLoading && role === "rider" && (
+            {/* USER / CUSTOMER */}
+            {!roleLoading && role === "user" && (
               <>
                 <li>
                   <NavLink
-                    className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Pending Deliveries"
-                    to="/dashboard/pending-deliveries"
+                    to="/dashboard/myParcels"
+                    className={navClass}
+                    data-tip="My Parcels"
                   >
-                    <FaClock />
-                    <span className="is-drawer-close:hidden">
-                      Pending Deliveries
-                    </span>
+                    <CiDeliveryTruck />
+                    <span>My Parcels</span>
                   </NavLink>
                 </li>
+
                 <li>
                   <NavLink
-                    className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Completed Deliveries"
-                    to="/dashboard/completed-deliveries"
+                    to="/dashboard/paymentHistory"
+                    className={navClass}
+                    data-tip="Payment History"
                   >
-                    <FaCheckCircle />
-                    <span className="is-drawer-close:hidden">
-                      Completed Deliveries
-                    </span>
+                    <FaMoneyCheckAlt />
+                    <span>Payment History</span>
                   </NavLink>
                 </li>
+
                 <li>
                   <NavLink
-                    className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="My Earnings"
-                    to="/dashboard/my-earnings"
+                    to="/dashboard/track"
+                    className={navClass}
+                    data-tip="Track a Package"
                   >
-                    <FaWallet />
-                    <span className="is-drawer-close:hidden">My Earnings</span>
+                    <FaSearchLocation />
+                    <span>Track a Package</span>
                   </NavLink>
                 </li>
               </>
             )}
-            {/* admin links  */}
+
+            {/* RIDER */}
+            {!roleLoading && role === "rider" && (
+              <>
+                <li>
+                  <NavLink
+                    to="/dashboard/pending-deliveries"
+                    className={navClass}
+                    data-tip="Pending Deliveries"
+                  >
+                    <FaClock />
+                    <span>Pending Deliveries</span>
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
+                    to="/dashboard/completed-deliveries"
+                    className={navClass}
+                    data-tip="Completed Deliveries"
+                  >
+                    <FaCheckCircle />
+                    <span>Completed Deliveries</span>
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
+                    to="/dashboard/my-earnings"
+                    className={navClass}
+                    data-tip="My Earnings"
+                  >
+                    <FaWallet />
+                    <span>My Earnings</span>
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
+                    to="/dashboard/track"
+                    className={navClass}
+                    data-tip="Track a Package"
+                  >
+                    <FaSearchLocation />
+                    <span>Track a Package</span>
+                  </NavLink>
+                </li>
+              </>
+            )}
+
+            {/* ADMIN */}
             {!roleLoading && role === "admin" && (
               <>
                 <li>
                   <NavLink
                     to="/dashboard/assignRider"
-                    className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    className={navClass}
                     data-tip="Assign Rider"
                   >
                     <FaMotorcycle />
-                    <span className="is-drawer-close:hidden">Assign Rider</span>
+                    <span>Assign Rider</span>
                   </NavLink>
                 </li>
 
                 <li>
                   <NavLink
-                    className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Active Riders"
                     to="/dashboard/active-riders"
+                    className={navClass}
+                    data-tip="Active Riders"
                   >
                     <FaUserCheck />
-                    <span className="is-drawer-close:hidden">
-                      Active Riders
-                    </span>
+                    <span>Active Riders</span>
                   </NavLink>
                 </li>
 
                 <li>
                   <NavLink
-                    className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Pending Riders"
                     to="/dashboard/pending-riders"
+                    className={navClass}
+                    data-tip="Pending Riders"
                   >
                     <FaUserClock />
-                    <span className="is-drawer-close:hidden">
-                      Pending Riders
-                    </span>
+                    <span>Pending Riders</span>
                   </NavLink>
                 </li>
 
                 <li>
                   <NavLink
                     to="/dashboard/makeAdmin"
-                    className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    className={navClass}
                     data-tip="Make Admin"
                   >
                     <FaUserShield />
-                    <span className="is-drawer-close:hidden">Make Admin</span>
+                    <span>Make Admin</span>
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
+                    to="/dashboard/track"
+                    className={navClass}
+                    data-tip="Track a Package"
+                  >
+                    <FaSearchLocation />
+                    <span>Track a Package</span>
                   </NavLink>
                 </li>
               </>
             )}
-            {/* List item */}
-            <li>
+
+            {/* Profile is available to every authenticated role */}
+            {!roleLoading && (
+              <li>
+                <NavLink
+                  to="/dashboard/profile"
+                  className={navClass}
+                  data-tip="Update Profile"
+                >
+                  <FaUserEdit />
+                  <span>Update Profile</span>
+                </NavLink>
+              </li>
+            )}
+
+            {/* Settings */}
+            <li className="mt-2 border-t border-white/10 pt-2">
               <button
-                className="rounded-xl text-slate-300 hover:bg-white/10 hover:text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                type="button"
+                className="dashboard-nav-link w-full rounded-xl text-left"
                 data-tip="Settings"
               >
-                {/* Settings icon */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="2"
-                  fill="none"
-                  stroke="currentColor"
-                  className="my-1.5 inline-block size-4"
-                >
-                  <path d="M20 7h-9"></path>
-                  <path d="M14 17H5"></path>
-                  <circle cx="17" cy="17" r="3"></circle>
-                  <circle cx="7" cy="7" r="3"></circle>
-                </svg>
-                <span className="is-drawer-close:hidden">Settings</span>
+                <FaCog />
+                <span>Settings</span>
               </button>
             </li>
           </ul>
-        </div>
+          <div className="dashboard-sidebar-footer w-full ">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
+              <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-teal-300">
+                ProCurier
+              </p>
+              <p className="mt-1 text-xs leading-5 text-slate-400">
+                Simple workflow. Clear milestones. Better control.
+              </p>
+            </div>
+          </div>
+        </aside>
       </div>
     </div>
   );

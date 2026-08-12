@@ -71,7 +71,7 @@ const UserDashboard = () => {
         {cards.map((card) => (
           <div
             key={card.label}
-            className="card border border-base-300 bg-base-100 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            className="dashboard-stat-card card transition hover:-translate-y-1"
           >
             <div className="card-body flex-row items-center justify-between p-5">
               <div>
@@ -87,7 +87,7 @@ const UserDashboard = () => {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
-        <section className="card border border-base-300 bg-base-100 shadow-sm">
+        <section className="dashboard-stat-card card">
           <div className="card-body">
             <h2 className="card-title">Delivery Progress</h2>
             <div className="h-80 w-full">
@@ -98,14 +98,14 @@ const UserDashboard = () => {
                   <YAxis allowDecimals={false} />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="count" name="Parcels" fill="#2563EB" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="count" name="Parcels" fill="#0f766e" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
         </section>
 
-        <section className="card border border-base-300 bg-base-100 shadow-sm">
+        <section className="dashboard-stat-card card">
           <div className="card-body">
             <h2 className="card-title">Payment Summary</h2>
             <div className="mt-4 rounded-xl bg-primary/5 p-5">

@@ -68,7 +68,7 @@ const RiderDashboard = () => {
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {cards.map((card) => (
-          <div key={card.label} className="card border border-base-300 bg-base-100 shadow-sm">
+          <div key={card.label} className="dashboard-stat-card card">
             <div className="card-body flex-row items-center justify-between p-5">
               <div>
                 <p className="text-sm opacity-60">{card.label}</p>
@@ -80,7 +80,7 @@ const RiderDashboard = () => {
         ))}
       </div>
 
-      <section className="card border border-base-300 bg-base-100 shadow-sm">
+      <section className="dashboard-stat-card card">
         <div className="card-body">
           <h2 className="card-title">Delivery Status</h2>
           <div className="h-80 w-full">
@@ -90,7 +90,7 @@ const RiderDashboard = () => {
                 <XAxis dataKey="status" />
                 <YAxis allowDecimals={false} />
                 <Tooltip />
-                <Bar dataKey="count" name="Parcels" fill="#2563EB" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="count" name="Parcels" fill="#0f766e" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
